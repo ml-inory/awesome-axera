@@ -1,5 +1,5 @@
 import gradio as gr
-from .whisper import Whisper
+from whisper_onnx import Whisper
 
 model = Whisper(model_path="./models", model_type="tiny")
 
