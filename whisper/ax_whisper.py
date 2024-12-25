@@ -1,7 +1,8 @@
-from ..utils.axengine import InferenceSession
+import sys
+import os
+from axengine import InferenceSession
 import numpy as np
 import librosa
-import os
 from typing import Tuple
 import soundfile as sf
 import base64
@@ -25,7 +26,7 @@ WHISPER_VOCAB_SIZE    = 51865
 WHISPER_N_TEXT_CTX    = 448
 
 NEG_INF = float("-inf")
-SOT_SEQUENCE = np.array([WHISPER_SOT,50260,WHISPER_TRANSCRIBE,WHISPER_NO_TIMESTAMPS], dtype=np.int32)
+SOT_SEQUENCE = np.array([WHISPER_SOT,WHISPER_SOT + 1 + tuple(WHISPER_LANGUAGES).index("zh"),WHISPER_TRANSCRIBE,WHISPER_NO_TIMESTAMPS], dtype=np.int32)
 WHISPER_N_TEXT_STATE_MAP = {
     "tiny": 384,
     "small": 768
@@ -119,6 +120,7 @@ class Whisper:
         self.encoder, self.decoder_main, self.decoder_loop, self.pe, self.tokens = load_models(model_path, model_type)
         self.WHISPER_N_TEXT_STATE = WHISPER_N_TEXT_STATE_MAP[self.model_type]
         self.language = language
+        self.choose_language(self.language)
 
     def choose_language(self, lang):
         if lang not in WHISPER_LANGUAGES.keys():
@@ -176,3 +178,7 @@ class Whisper:
         if self.language == "zh":
             pd = zhconv.convert(pd, 'zh-hans')
         return pd
+
+if __name__ == "__main__":
+    model = Whisper(model_path="./models", model_type="tiny")
+    print(model.transcribe("./demo.wav"))

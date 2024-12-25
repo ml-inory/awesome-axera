@@ -1,7 +1,7 @@
 import gradio as gr
-from whisper_onnx import Whisper
+from ax_whisper import Whisper
 
-model = Whisper(model_path="./models", model_type="tiny")
+model = Whisper(model_path="./models", model_type="small")
 
 def run(input_audio):
     return model.transcribe(input_audio)
