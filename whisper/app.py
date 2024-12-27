@@ -1,9 +1,10 @@
 import gradio as gr
-from ax_whisper import Whisper
+from whisper_onnx import Whisper
 
-model = Whisper(model_path="./models", model_type="small")
+model = Whisper(model_path="./models")
 
-def transcribe(input_audio):
+def transcribe(model_type, input_audio):
+    model.load_model(model_type)
     return model.transcribe(input_audio)
 
 with gr.Blocks() as demo:
@@ -15,12 +16,14 @@ with gr.Blocks() as demo:
         """
     )
     with gr.Group():
+        # 模型类型
+        model_type = gr.Dropdown(["tiny", "small"], value="small", label="Model type")
         # 上传音频
         audio = gr.Audio(label="Input audio", type="filepath", sources=["upload", "microphone"], format="wav")
         # 识别结果
         result = gr.Textbox(label="Result", interactive=False)
         # 识别按钮
         run_btn = gr.Button("Run")
-        run_btn.click(fn=transcribe, inputs=[audio], outputs=[result])
+        run_btn.click(fn=transcribe, inputs=[model_type, audio], outputs=[result])
 
-demo.launch(server_name="0.0.0.0", server_port=8080, ssl_verify=False)
+demo.launch(server_name="0.0.0.0", server_port=8080, ssl_verify=False, ssl_certfile="../cert.pem", ssl_keyfile="../key.pem")

@@ -1,0 +1,8 @@
+gradio
+onnxruntime
+onnx
+numpy
+librosa
+soundfile
+torch
+transformers

@@ -114,11 +114,17 @@ def supress_tokens(logits, is_initial):
 
 
 class Whisper:
-    def __init__(self, model_path, model_type, language="zh"):
+    def __init__(self, model_path, model_type=None, language="zh"):
+        self.model_path = model_path
         self.model_type = model_type
-        self.encoder, self.decoder_main, self.decoder_loop, self.pe, self.tokens = load_models(model_path, model_type)
-        self.WHISPER_N_TEXT_STATE = WHISPER_N_TEXT_STATE_MAP[self.model_type]
+        self.load_model(model_type)
         self.language = language
+
+    def load_model(self, model_type):
+        if model_type != self.model_type:
+            self.encoder, self.decoder_main, self.decoder_loop, self.pe, self.tokens = load_models(self.model_path, model_type)
+            self.WHISPER_N_TEXT_STATE = WHISPER_N_TEXT_STATE_MAP[model_type]
+            self.model_type = model_type
 
     def choose_language(self, lang):
         if lang not in WHISPER_LANGUAGES.keys():
