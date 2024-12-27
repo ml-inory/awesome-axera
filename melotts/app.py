@@ -25,4 +25,4 @@ with gr.Blocks() as demo:
     run_btn.click(fn=run, inputs=[sentence], outputs=[audio])
 
 
-demo.launch(server_name="0.0.0.0", server_port=8080)
+demo.launch(server_name="0.0.0.0", server_port=8080, ssl_verify=False, ssl_certfile="../cert.pem", ssl_keyfile="../key.pem")
