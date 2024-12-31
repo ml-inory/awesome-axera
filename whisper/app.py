@@ -1,7 +1,7 @@
 import gradio as gr
 from whisper_onnx import Whisper
 
-model = Whisper(model_path="./models")
+model = Whisper(model_path="./models", model_type="small")
 
 def transcribe(model_type, input_audio):
     model.load_model(model_type)
@@ -26,4 +26,4 @@ with gr.Blocks() as demo:
         run_btn = gr.Button("Run")
         run_btn.click(fn=transcribe, inputs=[model_type, audio], outputs=[result])
 
-demo.launch(server_name="0.0.0.0", server_port=8080, ssl_verify=False, ssl_certfile="../cert.pem", ssl_keyfile="../key.pem")
+demo.launch(server_name="0.0.0.0")
